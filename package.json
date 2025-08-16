@@ -1,15 +1,27 @@
 {
-  "name": "hsluv",
-  "version": "1.0.0",
-  "description": "",
-  "main": "hsluv.ts",
+  "name": "coda-hsluv",
+  "version": "12.0.0",
+  "description": "A comprehensive Coda Pack for HSLuv color space conversions, accessibility analysis, and color manipulation",
+  "main": "pack.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require ts-node/register --extensions ts,tsx 'test/**/*.ts'",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "coda:build": "coda build pack.ts",
+    "coda:build:watch": "coda build pack.ts --watch",
+    "coda:validate": "coda validate pack.ts",
+    "coda:upload": "coda upload pack.ts",
+    "coda:release": "coda release pack.ts",
+    "coda:whoami": "coda whoami",
+    "coda:clean": "rm -rf .coda-pack.json bundle.js bundle.js.map"
   },
-  "author": "",
+  "author": "Coda HSLuv Pack",
   "license": "ISC",
   "dependencies": {
-    "@codahq/packs-sdk": "^1.7.16"
+    "@codahq/packs-sdk": "^1.7.16",
+    "hsluv": "^1.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.12",
@@ -38,5 +50,21 @@
     "sinon": "^17.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.2.2"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "semi": true,
+    "singleQuote": true
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ]
   }
 }
