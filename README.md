@@ -1,4 +1,4 @@
-# Hsluv Pack Documentation
+# Coda HSLuv Pack
 
 This Coda Pack provides a collection of formulas for working with colors, including color conversion, color analysis, color harmony, color scheme generation, and color manipulation.
 
@@ -48,6 +48,7 @@ This Coda Pack provides a collection of formulas for working with colors, includ
     - getColorName(color) -> common name or "Unknown"
   - Notes:
     - Contrast uses WCAG luminance formula.
+    - Validation accepts 6-digit hex (#RRGGBB). The ColorPreviewFormatter tolerates #RGB by normalizing to 6 digits.
     - Color-blindness matrices are simple linear projections for protanopia, deuteranopia, and tritanopia.
 
 - schemas.ts
@@ -66,6 +67,15 @@ This Coda Pack provides a collection of formulas for working with colors, includ
     - Type aliases: WCAGLevel = 'AA'|'AAA', TextSize = 'large'|'small', ColorBlindnessType = 'protanopia'|'deuteranopia'|'tritanopia'
     - WCAG_CONTRAST_RATIOS — constants for AA/AAA thresholds
     - STANDARD_COLORS — BLACK/WHITE hex values
+
+## Development & Usage
+
+- Build: `pnpm run coda:build`
+- Validate: `pnpm run coda:validate`
+- Upload: `pnpm run coda:upload`
+- Release: `pnpm run coda:release`
+
+The pack code uses the `hsluv` npm package for conversions. All formulas are registered from `pack.ts` and rely on helpers in `helpers.ts` and schemas in `schemas.ts`.
 
 ## Quick Examples
 
@@ -91,47 +101,47 @@ This Coda Pack provides a collection of formulas for working with colors, includ
 
 ### Color Conversion
 
-### HexToRGB
+### HexToRgb
 
 Convert a hex color to RGB values.
 
 **Example:**
-`=HexToRGB("#FF0000")` returns `{r: 255, g: 0, b: 0}`
+`=HexToRgb("#FF0000")` returns `{r: 255, g: 0, b: 0}`
 
-### RGBToHex
+### RgbToHex
 
 Convert RGB values to a hex color.
 
 **Example:**
-`=RGBToHex(255, 0, 0)` returns `"#FF0000"`
+`=RgbToHex(255, 0, 0)` returns `"#FF0000"`
 
-### HexToHSLUV
+### HexToHsluv
 
 Convert a hex color to HSLUV values.
 
 **Example:**
-`=HexToHSLUV("#FF0000")` returns `{h: 0, s: 100, l: 50}`
+`=HexToHsluv("#FF0000")` returns `{h: 0, s: 100, l: 50}`
 
-### HSLUVToHex
+### HsluvToHex
 
 Convert HSLUV values to a hex color.
 
 **Example:**
-`=HSLUVToHex(0, 100, 50)` returns `"#FF0000"`
+`=HsluvToHex(0, 100, 50)` returns `"#FF0000"`
 
-### HexToHPLUV
+### HexToHpluv
 
 Convert a hex color to HPLuv values.
 
 **Example:**
-`=HexToHPLUV("#FF0000")` returns `{h: 0, p: 100, l: 53.23}`
+`=HexToHpluv("#FF0000")` returns `{h: 0, p: 100, l: 53.23}`
 
-### HPLUVToHex
+### HpluvToHex
 
 Convert HPLuv values to a hex color.
 
 **Example:**
-`=HPLUVToHex(0, 100, 53.23)` returns `"#FF0000"`
+`=HpluvToHex(0, 100, 53.23)` returns `"#FF0000"`
 
 ### RGBToCMYK
 
