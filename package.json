@@ -17,10 +17,10 @@
     "coda:whoami": "coda whoami",
     "coda:clean": "rm -rf .coda-pack.json bundle.js bundle.js.map"
   },
-  "author": "Coda HSLuv Pack",
+  "author": "Rami Isaac <https://github.com/ramiisaac>",
   "license": "ISC",
   "dependencies": {
-    "@codahq/packs-sdk": "^1.7.16",
+    "@codahq/packs-sdk": "^1.9.9",
     "hsluv": "^1.0.1"
   },
   "devDependencies": {

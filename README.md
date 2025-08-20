@@ -1,287 +1,474 @@
 # Coda HSLuv Pack
 
-This Coda Pack provides a collection of formulas for working with colors, including color conversion, color analysis, color harmony, color scheme generation, and color manipulation.
+A comprehensive Coda Pack for HSLuv color space conversions, accessibility analysis, and advanced color manipulation. This pack provides professional-grade color tools for designers, developers, and data analysts working with color data in Coda.
 
-## Files
+## Features
 
-- pack.ts
-  - Responsibility: the Pack entrypoint — registers all Coda formulas, column formats, and ties the SDK schemas to runtime logic.
-  - Notable formulas (examples):
-    - HexToRgb(hex) -> { r, g, b }  
-      Example: `=HexToRgb("#FF0000")` returns `{r:255,g:0,b:0}`
-    - RgbToHex(r,g,b) -> "#RRGGBB"  
-      Example: `=RgbToHex(255,0,0)` returns `"#FF0000"`
-    - HexToHsluv(hex) / HsluvToHex(h,s,l)
-    - HexToHpluv(hex) / HpluvToHex(h,p,l)
-    - ComplementaryColor(hex) -> complementary hex
-    - RGBToCMYK(...) / CMYKToRGB(...)
-    - ContrastRatio(color1, color2) -> number
-    - IsAccessible(foreground, background, level, size) -> boolean
-    - SuggestTextColor(backgroundColor, level) -> "#000000" | "#FFFFFF" | message
-    - ColorName(hex) -> common color name
-    - IsWarmOrCool(hex) -> "Warm" | "Cool"
-    - EvaluateColorHarmony(color1, color2) -> string
-    - MonochromaticScheme(baseColor,count), AnalogousScheme(...), TriadicScheme(...), TetradicScheme(...)
-    - AdjustBrightness/AdjustSaturation, MixColors, Tint, Shade
-    - SimulateColorBlindness(color, type)
-    - LinearGradient(color1, color2, steps) -> array of hex
-  - Column format:
-    - ColorPreview (uses ColorPreviewFormatter) — returns a small SVG data URL to preview one or more hex colors.
+- **Advanced Color Conversions**: Support for HSLuv, HPLuv, RGB, CMYK, and Hex color spaces
+- **Accessibility Analysis**: WCAG-compliant contrast ratio calculations and accessibility checking
+- **Color Harmony Evaluation**: Analyze color relationships and generate harmonious color schemes
+- **Color Scheme Generation**: Create monochromatic, analogous, triadic, and tetradic color palettes
+- **Color Manipulation**: Adjust brightness, saturation, create tints and shades
+- **Color Blindness Simulation**: Simulate how colors appear to users with different types of color vision deficiency
+- **Gradient Generation**: Create smooth color gradients with custom step counts
+- **Visual Color Preview**: Column format for displaying color swatches directly in tables
 
-- helpers.ts
-  - Responsibility: pure helper utilities used by pack.ts. Keep helper code focused and well-tested.
-  - Functions:
-    - isValidHexColor(hex): validate `#RRGGBB`
-    - isValidHsluv(h,s,l), isValidHpluv(h,p,l), isValidRgb(r,g,b)
-    - hexToRgb(hex) -> [r,g,b]
-    - rgbToHex([r,g,b]) -> "#RRGGBB"
-    - getLuminance(hex) -> number (relative luminance)
-    - calculateContrastRatio(color1,color2) -> number (rounded to 2 decimals)
-    - mixColors(color1,color2,ratio) -> mixed hex
-    - rotateHue(h,degrees) -> normalized hue
-    - rgbToCmyk(r,g,b) -> {c,m,y,k}
-    - cmykToRgb(c,m,y,k) -> {r,g,b}
-    - simulateColorBlindness(rgbArray,type) -> simulated rgb array
-    - checkAccessibility(foreground, background, level, size) -> boolean
-    - evaluateColorHarmony(color1,color2) -> string
-    - isWarmOrCool(color) -> "Warm"|"Cool"
-    - getColorName(color) -> common name or "Unknown"
-  - Notes:
-    - Contrast uses WCAG luminance formula.
-    - Validation accepts 6-digit hex (#RRGGBB). The ColorPreviewFormatter tolerates #RGB by normalizing to 6 digits.
-    - Color-blindness matrices are simple linear projections for protanopia, deuteranopia, and tritanopia.
+## Installation
 
-- schemas.ts
-  - Responsibility: Coda object schema definitions used by formulas that return structured objects.
-  - Exports:
-    - RGBSchema — { r:number, g:number, b:number }
-    - HSLuvSchema — { h:number, s:number, l:number }
-    - HPLuvSchema — { h:number, p:number, l:number }
-    - CMYKSchema — { c:number, m:number, y:number, k:number }
-  - These schemas are attached to formulas returning objects so Coda can render structured results.
+1. In your Coda document, click "Packs" in the left sidebar
+2. Search for "HSLuv" or install this pack directly
+3. Click "Install"
+4. No authentication required - all calculations are performed locally
 
-- types.ts
-  - Responsibility: TypeScript type aliases and constants shared across the pack.
-  - Exports:
-    - Interfaces: RGBColor, HSLuvColor, HPLuvColor, CMYKColor
-    - Type aliases: WCAGLevel = 'AA'|'AAA', TextSize = 'large'|'small', ColorBlindnessType = 'protanopia'|'deuteranopia'|'tritanopia'
-    - WCAG_CONTRAST_RATIOS — constants for AA/AAA thresholds
-    - STANDARD_COLORS — BLACK/WHITE hex values
-
-## Development & Usage
-
-- Build: `pnpm run coda:build`
-- Validate: `pnpm run coda:validate`
-- Upload: `pnpm run coda:upload`
-- Release: `pnpm run coda:release`
-
-The pack code uses the `hsluv` npm package for conversions. All formulas are registered from `pack.ts` and rely on helpers in `helpers.ts` and schemas in `schemas.ts`.
-
-## Quick Examples
-
-- Convert hex to HSLuv:
-  `=HexToHsluv("#FF0000")` -> { h: 0, s: 100, l: 50 }
-
-- Get complementary color:
-  `=ComplementaryColor("#FF0000")` -> "#00FFFF" (example, actual result from HSLuv conversion)
-
-- Check accessibility:
-  `=IsAccessible("#000000","#FFFFFF","AA","small")` -> true
-
-- Generate a gradient:
-  `=LinearGradient("#FF0000","#00FF00",5)` -> array of 5 hex colors between red and green
-
-## Notes & Contributing
-
-- The pack uses the `hsluv` library for conversions between hex, HSLuv, and HPLuv.
-- Helpers encapsulate color math so formulas remain concise.
-- If you add formulas to pack.ts, update README examples and list them in the Files -> pack.ts section.
-
-## Existing formula reference
-
-### Color Conversion
+## Color Conversion Formulas
 
 ### HexToRgb
+Convert hexadecimal color values to RGB format.
 
-Convert a hex color to RGB values.
+**Syntax:** `HexToRgb(hex)`
+
+**Parameters:**
+- `hex` (required): Hex color code in #RRGGBB format
+
+**Returns:** Object with r, g, b values (0-255)
 
 **Example:**
-`=HexToRgb("#FF0000")` returns `{r: 255, g: 0, b: 0}`
+```
+HexToRgb("#FF0000")
+// Returns: {r: 255, g: 0, b: 0}
+```
 
 ### RgbToHex
+Convert RGB values to hexadecimal color format.
 
-Convert RGB values to a hex color.
+**Syntax:** `RgbToHex(r, g, b)`
+
+**Parameters:**
+- `r` (required): Red value (0-255)
+- `g` (required): Green value (0-255)
+- `b` (required): Blue value (0-255)
+
+**Returns:** Hex color string
 
 **Example:**
-`=RgbToHex(255, 0, 0)` returns `"#FF0000"`
+```
+RgbToHex(255, 0, 0)
+// Returns: "#FF0000"
+```
 
 ### HexToHsluv
+Convert hex colors to HSLuv color space for perceptually uniform color manipulation.
 
-Convert a hex color to HSLUV values.
+**Syntax:** `HexToHsluv(hex)`
+
+**Parameters:**
+- `hex` (required): Hex color code in #RRGGBB format
+
+**Returns:** Object with h (hue), s (saturation), l (lightness) values
 
 **Example:**
-`=HexToHsluv("#FF0000")` returns `{h: 0, s: 100, l: 50}`
+```
+HexToHsluv("#FF0000")
+// Returns: {h: 0, s: 100, l: 53.24}
+```
 
 ### HsluvToHex
+Convert HSLuv values back to hex format.
 
-Convert HSLUV values to a hex color.
+**Syntax:** `HsluvToHex(h, s, l)`
+
+**Parameters:**
+- `h` (required): Hue (0-360)
+- `s` (required): Saturation (0-100)
+- `l` (required): Lightness (0-100)
+
+**Returns:** Hex color string
 
 **Example:**
-`=HsluvToHex(0, 100, 50)` returns `"#FF0000"`
+```
+HsluvToHex(0, 100, 53.24)
+// Returns: "#FF0000"
+```
 
 ### HexToHpluv
+Convert hex colors to HPLuv color space for more saturated color manipulation.
 
-Convert a hex color to HPLuv values.
+**Syntax:** `HexToHpluv(hex)`
 
 **Example:**
-`=HexToHpluv("#FF0000")` returns `{h: 0, p: 100, l: 53.23}`
+```
+HexToHpluv("#FF0000")
+// Returns: {h: 0, p: 426.23, l: 53.24}
+```
 
 ### HpluvToHex
+Convert HPLuv values to hex format.
 
-Convert HPLuv values to a hex color.
+**Syntax:** `HpluvToHex(h, p, l)`
 
 **Example:**
-`=HpluvToHex(0, 100, 53.23)` returns `"#FF0000"`
+```
+HpluvToHex(0, 426.23, 53.24)
+// Returns: "#FF0000"
+```
 
 ### RGBToCMYK
+Convert RGB values to CMYK color space for print applications.
 
-Convert RGB values to CMYK values.
+**Syntax:** `RGBToCMYK(r, g, b)`
 
 **Example:**
-`=RGBToCMYK(255, 0, 0)` returns `{c: 0, m: 1, y: 1, k: 0}`
+```
+RGBToCMYK(255, 0, 0)
+// Returns: {c: 0, m: 100, y: 100, k: 0}
+```
 
 ### CMYKToRGB
+Convert CMYK values to RGB color space.
 
-Convert CMYK values to RGB values.
+**Syntax:** `CMYKToRGB(c, m, y, k)`
 
 **Example:**
-`=CMYKToRGB(0, 1, 1, 0)` returns `{r: 255, g: 0, b: 0}`
+```
+CMYKToRGB(0, 100, 100, 0)
+// Returns: {r: 255, g: 0, b: 0}
+```
+
+## Accessibility Analysis
+
+### ContrastRatio
+Calculate the WCAG contrast ratio between two colors.
+
+**Syntax:** `ContrastRatio(color1, color2)`
+
+**Parameters:**
+- `color1` (required): First color (hex format)
+- `color2` (required): Second color (hex format)
+
+**Returns:** Contrast ratio as a decimal (1-21)
+
+**Example:**
+```
+ContrastRatio("#000000", "#FFFFFF")
+// Returns: 21.00 (maximum contrast)
+```
+
+### IsAccessible
+Check if a color combination meets WCAG accessibility standards.
+
+**Syntax:** `IsAccessible(foreground, background, level, size)`
+
+**Parameters:**
+- `foreground` (required): Text color (hex format)
+- `background` (required): Background color (hex format)
+- `level` (required): WCAG level ("AA" or "AAA")
+- `size` (required): Text size ("large" or "small")
+
+**Returns:** Boolean indicating if combination is accessible
+
+**Example:**
+```
+IsAccessible("#000000", "#FFFFFF", "AA", "small")
+// Returns: true
+```
+
+### SuggestTextColor
+Automatically suggest accessible text color for a given background.
+
+**Syntax:** `SuggestTextColor(backgroundColor, level)`
+
+**Parameters:**
+- `backgroundColor` (required): Background color (hex format)
+- `level` (required): WCAG level ("AA" or "AAA")
+
+**Returns:** Recommended text color (black or white)
+
+**Example:**
+```
+SuggestTextColor("#FF0000", "AA")
+// Returns: "#FFFFFF"
+```
 
 ## Color Analysis
 
-### ContrastRatio
-
-Calculate the contrast ratio between two colors.
-
-**Example:**
-`=ContrastRatio("#000000", "#FFFFFF")` returns `21`
-
-### IsAccessible
-
-Check if a text color is accessible on a given background color according to WCAG guidelines.
-
-**Example:**
-`=IsAccessible("#000000", "#FFFFFF", "AA", "large")` returns `true`
-
-### SuggestTextColor
-
-Suggest an accessible text color for a given background color based on WCAG guidelines.
-
-**Example:**
-`=SuggestTextColor("#FF0000", "AA")` returns `"#FFFFFF"`
-
 ### ColorName
+Get the common name for a color.
 
-Get the name of a color.
+**Syntax:** `ColorName(hex)`
 
 **Example:**
-`=ColorName("#FF0000")` returns `"Red"`
+```
+ColorName("#FF0000")
+// Returns: "Red"
+```
 
 ### IsWarmOrCool
+Determine if a color has warm or cool characteristics.
 
-Determine if a color is warm or cool.
+**Syntax:** `IsWarmOrCool(hex)`
 
 **Example:**
-`=IsWarmOrCool("#FF0000")` returns `"Warm"`
-
-## Color Harmony
+```
+IsWarmOrCool("#FF0000")
+// Returns: "Warm"
+```
 
 ### EvaluateColorHarmony
+Analyze the harmonic relationship between two colors.
 
-Evaluate the harmony of a color combination.
+**Syntax:** `EvaluateColorHarmony(color1, color2)`
 
 **Example:**
-`=EvaluateColorHarmony("#FF0000", "#00FF00")` returns `"Complementary (high contrast)"`
+```
+EvaluateColorHarmony("#FF0000", "#00FFFF")
+// Returns: "Complementary (high contrast)"
+```
 
 ## Color Scheme Generation
 
 ### MonochromaticScheme
+Generate a monochromatic color palette based on a single base color.
 
-Generate a monochromatic color scheme.
+**Syntax:** `MonochromaticScheme(baseColor, count)`
+
+**Parameters:**
+- `baseColor` (required): Base color (hex format)
+- `count` (required): Number of colors to generate
 
 **Example:**
-`=MonochromaticScheme("#FF0000", 5)` returns `["#FF0000", "#E60000", "#CC0000", "#B30000", "#990000"]`
+```
+MonochromaticScheme("#FF0000", 5)
+// Returns: ["#FF0000", "#E60000", "#CC0000", "#B30000", "#990000"]
+```
 
 ### AnalogousScheme
+Generate an analogous color scheme using colors adjacent on the color wheel.
 
-Generate an analogous color scheme.
+**Syntax:** `AnalogousScheme(baseColor, count, stepDegrees)`
+
+**Parameters:**
+- `baseColor` (required): Base color (hex format)
+- `count` (required): Number of colors to generate
+- `stepDegrees` (optional): Degrees between each color (default: 30)
 
 **Example:**
-`=AnalogousScheme("#FF0000", 5, 30)` returns `["#FF0000", "#FF3300", "#FF6600", "#FF9900", "#FFCC00"]`
+```
+AnalogousScheme("#FF0000", 5, 30)
+// Returns: ["#FF0000", "#FF3300", "#FF6600", "#FF9900", "#FFCC00"]
+```
 
 ### TriadicScheme
+Generate a triadic color scheme using three evenly spaced colors.
 
-Generate a triadic color scheme.
+**Syntax:** `TriadicScheme(baseColor)`
 
 **Example:**
-`=TriadicScheme("#FF0000")` returns `["#FF0000", "#00FF00", "#0000FF"]`
+```
+TriadicScheme("#FF0000")
+// Returns: ["#FF0000", "#00FF00", "#0000FF"]
+```
 
 ### TetradicScheme
+Generate a tetradic (rectangle) color scheme using four colors.
 
-Generate a tetradic (rectangle) color scheme.
+**Syntax:** `TetradicScheme(baseColor)`
 
 **Example:**
-`=TetradicScheme("#FF0000")` returns `["#FF0000", "#00FF00", "#0000FF", "#FF00FF"]`
+```
+TetradicScheme("#FF0000")
+// Returns: ["#FF0000", "#80FF00", "#00FFFF", "#8000FF"]
+```
 
 ## Color Manipulation
 
 ### AdjustBrightness
+Modify the brightness of a color by a specified percentage.
 
-Adjust the brightness of a color.
+**Syntax:** `AdjustBrightness(color, percentage)`
+
+**Parameters:**
+- `color` (required): Base color (hex format)
+- `percentage` (required): Brightness adjustment (-100 to 100)
 
 **Example:**
-`=AdjustBrightness("#FF0000", 20)` returns `"#FF3333"`
+```
+AdjustBrightness("#FF0000", 20)
+// Returns: "#FF3333"
+```
 
 ### AdjustSaturation
+Modify the saturation of a color by a specified percentage.
 
-Adjust the saturation of a color.
+**Syntax:** `AdjustSaturation(color, percentage)`
 
 **Example:**
-`=AdjustSaturation("#FF0000", -50)` returns `"#800000"`
+```
+AdjustSaturation("#FF0000", -50)
+// Returns: "#BF4040"
+```
 
 ### MixColors
+Blend two colors together with a specified ratio.
 
-Mix two colors with a given ratio.
+**Syntax:** `MixColors(color1, color2, ratio)`
+
+**Parameters:**
+- `color1` (required): First color (hex format)
+- `color2` (required): Second color (hex format)
+- `ratio` (required): Mix ratio (0.0 = all color1, 1.0 = all color2)
 
 **Example:**
-`=MixColors("#FF0000", "#00FF00", 0.5)` returns `"#808000"`
+```
+MixColors("#FF0000", "#00FF00", 0.5)
+// Returns: "#808000"
+```
 
 ### Tint
+Create a tint by mixing a color with white.
 
-Create a tint of a color (mix with white).
+**Syntax:** `Tint(color, amount)`
+
+**Parameters:**
+- `color` (required): Base color (hex format)
+- `amount` (required): Tint amount (0.0 to 1.0)
 
 **Example:**
-`=Tint("#FF0000", 0.5)` returns `"#FF8080"`
+```
+Tint("#FF0000", 0.3)
+// Returns: "#FF4D4D"
+```
 
 ### Shade
+Create a shade by mixing a color with black.
 
-Create a shade of a color (mix with black).
+**Syntax:** `Shade(color, amount)`
 
 **Example:**
-`=Shade("#FF0000", 0.5)` returns `"#800000"`
+```
+Shade("#FF0000", 0.3)
+// Returns: "#B30000"
+```
+
+## Color Blindness Analysis
 
 ### SimulateColorBlindness
+Simulate how a color appears to people with different types of color vision deficiency.
 
-Simulate how a color appears to people with color blindness.
+**Syntax:** `SimulateColorBlindness(color, type)`
+
+**Parameters:**
+- `color` (required): Color to simulate (hex format)
+- `type` (required): Type of color blindness ("protanopia", "deuteranopia", "tritanopia")
 
 **Example:**
-`=SimulateColorBlindness("#FF0000", "protanopia")` returns `"#7F7F3F"`
+```
+SimulateColorBlindness("#FF0000", "protanopia")
+// Returns: "#B8B83F"
+```
 
-## Gradients
+## Gradient Generation
 
 ### LinearGradient
+Generate a smooth color gradient between two colors.
 
-Generate a linear gradient between two colors.
+**Syntax:** `LinearGradient(color1, color2, steps)`
+
+**Parameters:**
+- `color1` (required): Start color (hex format)
+- `color2` (required): End color (hex format)
+- `steps` (required): Number of gradient steps
 
 **Example:**
-`=LinearGradient("#FF0000", "#00FF00", 5)` returns `["#FF0000", "#BF4000", "#7F8000", "#3FBF00", "#00FF00"]`
+```
+LinearGradient("#FF0000", "#00FF00", 5)
+// Returns: ["#FF0000", "#BF4000", "#7F8000", "#3FBF00", "#00FF00"]
+```
+
+## Column Format
+
+### ColorPreview
+Display color swatches directly in table columns for visual reference.
+
+**Usage:**
+1. Select a column containing hex color codes
+2. Apply the "ColorPreview" column format
+3. Colors will display as visual swatches alongside the hex values
+
+## Use Cases
+
+### Design Systems
+Create and maintain consistent color palettes for brand guidelines, ensuring accessibility compliance across all color combinations.
+
+### Data Visualization
+Generate harmonious color schemes for charts and graphs, with automatic accessibility checking for text overlays.
+
+### Print Design
+Convert colors between RGB and CMYK color spaces for accurate print reproduction.
+
+### Accessibility Auditing
+Systematically check color combinations across designs to ensure WCAG compliance and inclusive user experiences.
+
+### Color Analysis
+Analyze color relationships, generate color harmonies, and understand the psychological impact of color choices.
+
+### Brand Development
+Develop comprehensive brand color systems with multiple variations, tints, and shades while maintaining visual consistency.
+
+## Advanced Features
+
+### HSLuv Color Space
+HSLuv provides perceptually uniform color manipulation, ensuring that adjustments to saturation and lightness appear consistent across all hues.
+
+### HPLuv Color Space
+HPLuv offers maximum chroma for each lightness level, enabling more vibrant color manipulations when saturation is a priority.
+
+### WCAG Compliance
+All accessibility functions are based on official WCAG 2.1 guidelines, providing reliable compliance checking for web and digital products.
+
+### Color Blindness Awareness
+Simulation functions help designers understand how their color choices affect users with different types of color vision, promoting inclusive design practices.
+
+## Best Practices
+
+### Color Space Selection
+- Use HSLuv for perceptually uniform color adjustments
+- Use HPLuv when maximum saturation is desired
+- Use RGB for screen-based applications
+- Use CMYK for print applications
+
+### Accessibility Guidelines
+- Maintain minimum contrast ratios of 4.5:1 for normal text (WCAG AA)
+- Use 7:1 contrast ratio for enhanced accessibility (WCAG AAA)
+- Test color combinations with color blindness simulation
+- Provide alternative methods for color-coded information
+
+### Color Harmony
+- Use monochromatic schemes for subtle, sophisticated palettes
+- Apply analogous schemes for natural, comfortable color combinations
+- Implement triadic schemes for vibrant, balanced designs
+- Consider tetradic schemes for rich, complex palettes
+
+### Performance Considerations
+- Cache color calculations when processing large datasets
+- Use appropriate precision for color values based on output requirements
+- Consider color space efficiency for specific use cases
+
+## Limitations
+
+- Color conversions are optimized for sRGB color space
+- CMYK conversions are approximations suitable for general use
+- Color blindness simulations use standard transformation matrices
+- HSLuv and HPLuv are designed for perceptual uniformity within their respective constraints
+
+## Version History
+
+- **12.0.0**: Complete feature set with all color spaces, accessibility analysis, and advanced manipulation tools
+
+## Author
+
+Created by **Rami Isaac**  
+GitHub: [github.com/ramiisaac](https://github.com/ramiisaac)
+
+## License
+
+ISC License
